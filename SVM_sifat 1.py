@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[14]:
-
-
 import pandas as pd
 df = pd.read_csv ("C:\\Users\\Azmat\\OneDrive\\Desktop\\preprocessed_dataset1.csv")
 df.head(5)
@@ -40,8 +34,25 @@ print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 print("Precision:",metrics.precision_score(y_test, y_pred))
 print("Recall:",metrics.recall_score(y_test, y_pred))
 
+FEATURE ANALYSIS
+# We imported the permutation_importance module from sklearn. The permutation_importance module is indicative of how much the model 
+# depends on a particular feature.
+feature_importance = permutation_importance(clf, X_test, y_test, n_jobs=-1)
+feature_importance
 
-# In[ ]:
+# As seen above the 'importances_mean' key corresponds to the mean of importance of each feature
+# We would like to sort the array to get the importances in an increasing order
+# We can sort it using the sort() method, however we will use argsort() method which will sort the list of indices that would be present after sorting
+# This argsort will be used to plot the features in an increasing order without actually sorting the data 
+args = feature_importance.importances_mean.argsort()
+args
+
+# Plotting the feature importance using the seaborn library
+plt.figure(figsize=(5,5))
+sns.barplot(y=X_test.columns[args], x=feature_importance.importances_mean[args], estimator=sum, orient="h", color= "steelblue")
+plt.xlabel('Importance')
+plt.title('Feature Analysis for SVM Model')
+plt.show()
 
 
 
