@@ -1,0 +1,46 @@
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+df = pd.read_csv ("C:\\Users\\Azmat\\OneDrive\\Desktop\\CVS project\\preprocessed_dataset.csv")
+df.head(5)
+
+X = df [['age', 'gender', 'height', 'weight', 'systolic', 'diastolic', 'cholesterol','glucose','smoke', 'bmi', 'pulse_pressure']]
+y = df ['cardiovascular_disease'].ravel()
+# Split your dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Initialize your logistic regression model
+logreg = LogisticRegression()
+
+# Train the model on the training set
+logreg.fit(X_train, y_train)
+
+# Make predictions on the testing set
+y_pred = logreg.predict(X_test)
+
+# Evaluate the accuracy of the model
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+print("Precision:",metrics.precision_score(y_test, y_pred))
+print("Recall:",metrics.recall_score(y_test, y_pred))
+
+#FEATURE ANALYSIS
+
+# We imported the permutation_importance module from sklearn. The permutation_importance module is indicative of how much the model 
+# depends on a particular feature.
+feature_importance = permutation_importance(logreg, X_test, y_test, n_jobs=-1)
+feature_importance
+
+# As seen above the 'importances_mean' key corresponds to the mean of importance of each feature
+# We would like to sort the array to get the importances in an increasing order
+# We can sort it using the sort() method, however we will use argsort() method which will sort the list of indices that would be present after sorting
+# This argsort will be used to plot the features in an increasing order without actually sorting the data 
+args = feature_importance.importances_mean.argsort()
+args
+
+# Plotting the feature importance using the seaborn library
+plt.figure(figsize=(5,5))
+sns.barplot(y=X_test.columns[args], x=feature_importance.importances_mean[args], estimator=sum, orient="h", color= "steelblue")
+plt.xlabel('Importance')
+plt.title('Feature Analysis for Logistic Regression Model')
+plt.show()
